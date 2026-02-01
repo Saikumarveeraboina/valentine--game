@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine? 💖</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #ffe6eb, #ffccdd);
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #d81b60;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.button-container {
+  display: flex;
+  gap: 1.5rem;
+  animation: fadeIn 1s ease-in-out;
+}
+
+button {
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+#yes {
+  background: linear-gradient(135deg, #ff4081, #d81b60);
+  color: #fff;
+  z-index: 10;
+}
+
+#yes:hover {
+  transform: scale(1.08);
+}
+
+#no {
+  background: linear-gradient(135deg, #777, #444);
+  color: #fff;
+  z-index: 9;
+}
+
+.fade-out {
+  animation: fadeOut 0.6s ease-in-out forwards;
+}
+</style>
+</head>
+
+<body>
+
+<main class="content">
+  <h1>Will you be my Valentine? 💖</h1>
+  <div class="button-container">
+    <button id="yes">Yes 💕</button>
+    <button id="no">No 😢</button>
+  </div>
+</main>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const content = document.querySelector(".content");
+
+let escaped = false;
+
+function moveNoButton() {
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+  noBtn.style.position = "fixed";
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (!escaped) return;
+  const rect = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top + rect.height / 2);
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  if (distance < 90) moveNoButton();
+});
+
+noBtn.addEventListener("mouseenter", () => {
+  escaped = true;
+  moveNoButton();
+});
+
+document.addEventListener("touchstart", () => {
+  escaped = true;
+  moveNoButton();
+}, { passive: true });
+
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  escaped = true;
+  moveNoButton();
+});
+
+yesBtn.addEventListener("click", () => {
+  content.classList.add("fade-out");
+  setTimeout(() => {
+    window.location.href = "success.html";
+  }, 600);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You Said Yes! 💖</title>
+  
+  <style>
+    /* ============================================
+       CSS RESET & BASE STYLES
+       ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ffa06b 100%);
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    /* ============================================
+       FADE-IN ANIMATION FOR SMOOTH APPEARANCE
+       ============================================ */
+    @keyframes fadeInText {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInVideo {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Heart pulse animation for extra celebration effect */
+    @keyframes heartPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    /* ============================================
+       SUCCESS MESSAGE HEADING
+       ============================================ */
+    h1 {
+      font-size: 2.5rem;
+      color: white;
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeInText 0.8s ease-in-out;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      line-height: 1.2;
+    }
+
+    /* Heart emoji animation inside heading */
+    .heart {
+      display: inline-block;
+      animation: heartPulse 1.5s ease-in-out infinite;
+    }
+
+    /* ============================================
+       VIDEO CONTAINER
+       ============================================ */
+    .video-container {
+      margin-top: 2rem;
+      animation: fadeInVideo 1s ease-in-out 0.3s both;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    video {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      display: block;
+      border-radius: 15px;
+      background: #000;
+    }
+
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .video-container {
+        margin-top: 1.5rem;
+      }
+
+      video {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .video-container {
+        margin-top: 1rem;
+      }
+
+      body {
+        padding: 0.5rem;
+      }
+    }
+
+    /* ============================================
+       PLAY BUTTON HINT (if video doesn't auto-play)
+       ============================================ */
+    .play-hint {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      animation: fadeInText 1.5s ease-in-out 0.6s both;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="content">
+    <h1>You said yes <span class="heart">❤️</span><span class="heart">😁</span></h1>
+    
+    <div class="video-container">
+      <video id="celebration-video" controls>
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    
+    <p class="play-hint">Video is ready to play! Click play to start celebrating 🎉</p>
+  </main>
+
+  <script>
+    // ============================================
+    // VIDEO AUTO-PLAY AFTER USER INTERACTION
+    // This respects browser policies that prevent
+    // auto-play without user gesture
+    // ============================================
+    
+    const videoElement = document.getElementById("celebration-video");
+    const playHint = document.querySelector(".play-hint");
+
+    // Function to attempt video playback. Many browsers block autoplay
+    // unless there's a recent user gesture. We try, but fall back to
+    // waiting for a click/touch.
+    let videoAttempted = false;
+    function attemptVideoPlayback() {
+      if (videoAttempted) return;
+      videoAttempted = true;
+
+      const playPromise = videoElement.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Playback succeeded - hide hint smoothly
+            playHint.style.transition = 'opacity 0.3s ease-in-out';
+            playHint.style.opacity = '0';
+            playHint.style.pointerEvents = 'none';
+          })
+          .catch((err) => {
+            // Autoplay blocked - user must interact
+            console.log('Autoplay blocked, waiting for user interaction.', err);
+            videoAttempted = false; // allow future attempts after gestures
+          });
+      }
+    }
+
+    // Try a gentle autoplay shortly after load (may be blocked)
+    window.addEventListener('load', () => {
+      setTimeout(attemptVideoPlayback, 800);
+    });
+
+    // Ensure a user gesture (click/touch) will start playback
+    document.addEventListener('click', () => {
+      if (videoElement.paused) attemptVideoPlayback();
+    }, { passive: true });
+
+    document.addEventListener('touchstart', () => {
+      if (videoElement.paused) attemptVideoPlayback();
+    }, { passive: true });
+
+    // ============================================
+    // PERFORMANCE OPTIMIZATION
+    // Enable GPU acceleration for smooth animations
+    // ============================================
+    document.querySelector(".content").style.willChange = "opacity, transform";
+  </script>
+</body>
+</html>
