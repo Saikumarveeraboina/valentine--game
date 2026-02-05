@@ -1,4 +1,4 @@
-# 💖 Valentine Prank Web App
+# Valentine Prank Web App
 
 A fun and interactive Valentine-themed web project built using **HTML, CSS, and JavaScript**.
 
